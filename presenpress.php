@@ -72,6 +72,7 @@ public function register()
 public function plugins_loaded()
 {
     add_action('init', array($this, 'init'));
+    add_action( 'admin_init', array( $this, 'admin_init' ) );
     add_action('template_redirect', array($this, 'template_redirect'));
     add_action('wp_enqueue_scripts', array($this, 'wp_enqueue_scripts'));
     add_action('wp_head', array($this, 'wp_head'));
@@ -320,6 +321,57 @@ public function init()
         self::post_type,
         $args
     );
+}
+
+public function admin_init() {
+    global $pagenow;
+    // add the next slide button 
+    if (in_array( $pagenow, array( 'page.php', 'page-new.php', 'post.php', 'post-new.php' ) ) ) { 
+        if (current_user_can('edit_posts') && current_user_can('edit_pages') && get_user_option('rich_editing') == 'true') {
+            add_filter('mce_external_plugins', array( $this, 'add_tinymce_plugin' ) );
+            add_filter('mce_buttons', array( $this, 'register_button') );
+            wp_register_style( $handle, $src, $deps, $ver, $media );
+            wp_enqueue_style( 'tinymce-next-slide', plugins_url( 'css/button.css', __FILE__ ),array() );
+        }
+        add_action( 'admin_print_footer_scripts', array( $this, 'quicktag_js'), 99);
+    }
+}
+
+public function add_tinymce_plugin($plugin_array) {
+    $plugin_array['spnpnextpage'] = plugins_url('js/sp-np-nextpage.js', __FILE__); //trailingslashit(get_bloginfo('wpurl')).'index.php?spnp-action=spnp-admin-js';
+    return $plugin_array;
+}
+
+public function register_button( $buttons ) {
+    array_push( $buttons, '|', "spnpNextPageBtn");
+    return $buttons;
+    
+}
+
+public function quicktag_js(){
+    global $post;
+    if ( wp_script_is( 'quicktags' ) && $post->post_type == self::post_type ) {
+    ?>
+<script type="text/javascript">
+    jQuery(function($) {
+        QTags.addButton("ed_next", "page", "<!--nextpage-->\n","","p");
+
+        $("<input />")
+            .attr("type", "button")
+            .attr("id","ed_next")
+            .attr("value","next slide")
+            .attr("accesskey","p")
+            .attr("title","Insert Next Page Tag")
+            .addClass("ed_button")
+            .click(function(e){
+                e.preventDefault();
+                edInsertTag(edCanvas, $(this).attr("name"));
+            })
+            .appendTo($("#ed_toolbar"));
+    });
+</script>
+<?php
+    }
 }
 
 public function register_meta_box_cb()
