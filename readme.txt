@@ -36,7 +36,13 @@ http://www.youtube.com/watch?v=lZrNsrq18xk
 = How to create presentation =
 
 * Click Add New link in Presenation on the WordPress admin menu.
-* If you want to add next slide, please place &lt;!--nextpage--&gt; tag in the editor.
+* If you want to add next slide, please place &lt;!--nextpage--&gt; tag in the editor or click on next slide TinyMCE Button.
+* You can also embed the presentation into posts and pages via shortcode:
+  * src = (required) url of presentation
+  * w = (optional, default='700px') width of iframe, including units 
+  * h = (optional, default='360px') height of iframe, including units
+
+`[presenpress src="http://example.org/url_of_presentation" w="700px" h="360px"]`
 
 = How to add your custom theme =
 
@@ -74,5 +80,3 @@ add_filter('presenpress_themes', function($themes){
 3. Presentation Example
 4. Pointer
 5. Highlighted pointer
-
-
