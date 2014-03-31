@@ -321,6 +321,21 @@ public function init()
         self::post_type,
         $args
     );
+
+    add_shortcode('presenpress', array($this, 'do_shortcode'));
+}
+
+public function do_shortcode($atts) {
+    ob_start();
+    extract(shortcode_atts(array(
+    'src' => '#',
+    'w' => '700px',
+    'h' => '360px',
+    ), $atts));
+    ?>
+        <iframe class="presenpress-iframe" src="<?php echo esc_attr($src);?>" width="<?php echo esc_attr($w);?>" height="<?php echo esc_attr($h);?>" style="max-height: <?php esc_attr($h);?>" onload="this.contentWindow.focus();" >no iframes</iframe>
+    <?php
+    return ob_get_clean();
 }
 
 public function admin_init() {

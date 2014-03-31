@@ -136,4 +136,17 @@
             "-moz-radial-gradient(center center, circle, transparent "+from_size+"px, #000000 "+size+"px)"
         );
     }
+    //if in iframe, remove wpadminbar
+    function inIframe() { 
+        try { 
+            return window.self !== window.top;
+        } catch (e) { 
+            return true; 
+        }
+    } 
+    if (inIframe()) {
+        var sheet = document.styleSheets[0]; 
+        sheet.insertRule('#wpadminbar{display:none;}');
+    }
 })(jQuery)
+
