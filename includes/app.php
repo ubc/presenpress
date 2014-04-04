@@ -1,4 +1,11 @@
-<!doctype html>
+<?php 
+if( isset( $_GET['admin-bar'] ) && 'no' == $_GET['admin-bar'] )
+    show_admin_bar( false );
+$on_load = '';
+if( isset( $_GET['js'] ) && 'access' == $_GET['js'] )
+    $on_load = 'onload="parent.presentpressload(window)"';
+
+?><!doctype html>
 <html lang="en">
 
     <head>
@@ -14,7 +21,7 @@
         <?php wp_head(); ?>
     </head>
 
-    <body>
+    <body <?php echo $on_load; ?>>
 
         <div class="reveal">
 
